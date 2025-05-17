@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Object Detection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      margin-top: 50px;
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 700px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+      font-weight: 600;
+      font-size: 28px;
+    }
+
+    .upload-box {
+      border: 2px dashed #aaa;
+      padding: 30px;
+      border-radius: 12px;
+      background: #fafafa;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 120px;
+      font-size: 18px;
+      font-weight: 500;
+      color: #555;
+      user-select: none;
+    }
+
+    .upload-box:hover {
+      background: #f0f0f0;
+    }
+
+    .upload-box input {
+      display: none;
+    }
+
+    .preview img,
+    .result img {
+      max-width: 500px;
+      width: 100%;
+      height: auto;
+      margin: 20px auto 0;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      display: block;
+    }
+
+    .spinner {
+      display: none;
+      margin-top: 20px;
+      font-size: 16px;
+      color: #666;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>YOLOv5 Object Detection</h1>
+
+    <form id="upload-form" method="POST" enctype="multipart/form-data">
+      <label class="upload-box">
+        📷 Click or drag an image here
+        <input type="file" name="image" accept="image/*" required onchange="handleFileUpload(this)" />
+      </label>
+
+      <div class="preview" id="preview"></div>
+      <div class="spinner" id="spinner">Detecting objects...</div>
+    </form>
+
+    {% if output_image %}
+    <div class="result">
+      <h2>Detection Result</h2>
+      <img src="{{ output_image }}" alt="Detected Output" />
+    </div>
+    {% endif %}
+  </div>
+
+  <script>
+    function handleFileUpload(input) {
+      const preview = document.getElementById('preview');
+      const spinner = document.getElementById('spinner');
+
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          preview.innerHTML = `<img src="${e.target.result}" alt="Image Preview" />`;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+
+      spinner.style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('upload-form').submit();
+      }, 500);
+    }
+  </script>
+
+</body>
+</html>
